@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { withStyles } from '@material-ui/core/styles';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import './home.scss';
 import Movie from '../Movie';
+import styles from './styles.js';
 import smallLogo from './images/logo-small.png';
 import largeLogo from './images/logo-large.png';
+
 
 class Home extends Component {
   constructor(props) {
@@ -43,12 +48,12 @@ class Home extends Component {
   }
 
   handleChange = (e) => {
-    const selectedMovie = e.target.value;
-    this.setState({ selectedMovie });
+    this.setState({ selectedMovie: e.target.value});
   }
 
   render() {
     const { moviesList, loading, selectedMovie } = this.state;
+    const { classes } = this.props;
 
     return(
       <div className="container">
@@ -64,22 +69,26 @@ class Home extends Component {
           <section className="container__header__dropdown">
             <h1>Please Select A Movie</h1>
             <form>
-              <select 
-                className="form-control"
+              <Select 
+                // className="form-control"
+                className={classes.select}
+                value="movies"
                 onChange={this.handleChange}
                 disabled={loading}
+                inputProps={{
+                  name: "Select Movie",
+                  id: "movies"
+                }}
               >
-                <option value={"none"} defaultValue >
-                  Select Movie
-                </option>
+                <MenuItem>Select Movie</MenuItem>
                 {
                   moviesList.length > 0 && moviesList.map(movie => (
-                    <option key={movie.release_date} value={movie}>
+                    <MenuItem key={movie.release_date} value={movie}>
                       {movie.title}
-                    </option>
+                    </MenuItem>
                   ))
                 }
-              </select>
+              </Select>
             </form>
           </section>
         </header>
@@ -98,4 +107,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default withStyles(styles)(Home);

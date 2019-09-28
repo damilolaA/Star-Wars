@@ -1,0 +1,46 @@
+
+.movie {
+  display: block;
+  width: 50%;
+
+  &__crawl {
+    display: flex;
+    align-items: center;
+
+    p{
+      line-height: 28px;
+      opacity: .8;
+    }
+  }
+
+  &__table {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    th {
+      border-top: none;
+      color: #525f7f;
+      font-weight: 500;
+      font-size: 0.9rem;
+      border-bottom: none;
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+
+    tr {
+      height: 50px;
+      &:nth-of-type(odd) {
+        background-color: rgb(251, 251, 251);
+      }
+
+      td {
+        color: #525f7f;
+        vertical-align: middle;
+        border-top: 1px solid #f1f1f1;
+        padding: 20px;
+      }
+    }
+  }
+}

@@ -1,11 +1,77 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+
+import Loader from '../Loader';
+import "./movie.scss";
 
 class Movie extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      characterList: [],
+    }
+  } 
+
+  componentDidMount() {
+    this.fetchCharacters();
+  }
+
+  fetchCharacters = async() => {
+    const { movie } = this.props;
+    try{
+      const characterResponse = movie.characters.map(url => {
+        return axios.get(url);
+      });
+      const res = await Promise.all(characterResponse);
+      if(res.length > 0) {
+        const data = res.map(data => data.data);
+        this.setState({
+          characterList: data,
+          loading: false
+        });
+      }
+    }catch(error) {
+      this.setState({
+        loading: false
+      });
+      window.showToast('5', "An error occurred");
+    }
+  }
 
   render() {
+    const { movie } = this.props;
+    const { characterList, loading } = this.state;
+
     return(
-      <div>
-        Hey there
+      <div className="movie">
+        <div className="movie__crawl">
+          <p>{movie.opening_crawl}</p>
+        </div>
+        {
+          loading ? <Loader /> : (
+            <table className="movie__table">
+              <thead>
+                <tr style={{ background: '#fff' }}>
+                  <th>Name</th>
+                  <th>Gender</th>
+                  <th>Height</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  characterList.length > 0 && characterList.map((character) => (
+                    <tr key={character.name}>
+                      <td>{character.name}</td>
+                      <td>{character.gender}</td>
+                      <td>{character.height}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          )
+        }
       </div>
     );
   }
