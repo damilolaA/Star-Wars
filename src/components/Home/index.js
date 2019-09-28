@@ -32,16 +32,16 @@ class Home extends Component {
           loading: false
         });
       }else {
-        // handle error with toast
+        window.showToast(5, "An error occurred while fetching movies. Please try again");
       }
     }catch(error) {
-
+      window.showToast(5, "An error occurred while fetching movies. Please try again");
     }
   }
 
   handleChange = (e) => {
     const selectedMovie = e.target.value;
-    this.setState({selectedMovie});
+    this.setState({ selectedMovie });
   }
 
   render() {

@@ -1,0 +1,62 @@
+
+.toast {
+  position: fixed;
+  bottom: 15px;
+  left: 20px;
+  background-color: #323232;
+  z-index: 1200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  will-change: transform;
+  transform: translate(0, 50px);
+  opacity: 0;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 1, 1), opacity .25s .25s;
+  pointer-events: none;
+  border-radius: 2px;
+  padding: 14px 20px 10px 17px;
+  max-width: 300px;  
+  word-wrap: break-word;
+
+  // @include screen(small) {
+  //   bottom: 70px;
+  // }
+
+  &-body {
+    word-wrap: break-word;
+    max-width: 85%;
+    
+    &__text {
+      color: white;
+      font-weight: 400;
+      font-size: 15px;
+      letter-spacing: -.3px;
+      max-width: 100%;
+    }
+  }
+
+  &-close {
+    margin-left: 20px;
+
+    .close {
+      height: 20px;
+      line-height: 20px;
+      width: 14px;
+      color: white;
+      cursor: pointer;
+    }
+  }
+
+  &.open {
+    transform: translate(0, 0);
+    opacity: 1;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+@media(min-width: 1160px){
+  .toast{
+    min-width: 300px;
+    max-width: 400px;
+    left: 5%;
+  }
+}
