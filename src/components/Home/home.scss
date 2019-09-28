@@ -22,7 +22,45 @@
     background-size: cover;
     background-position: top;
     height: 400px;
-    justify-content: center;
-    flex-direction: column;
+
+    &__dropdown {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 150px;
+
+      h1 {
+        color: #fff;
+        font-size: 1.4rem;
+        line-height: 30px;
+        margin-bottom: 20px;
+      }
+
+      form {
+        position: relative;
+
+        .form-control {
+          height: 50px;
+          width: 200px;
+          border: none;
+          border-radius: 30px !important;
+          padding-left: 45px;
+
+          &::placeholder {
+            color: #d6d6da;
+          }
+        }
+
+        i {
+          display: block;
+          position: absolute;
+          z-index: 400;
+          font-size: 30px;
+          left: 10px;
+          top: 5px;
+          color: #bd1313;
+        }
+      }
+    }
   }
 }
