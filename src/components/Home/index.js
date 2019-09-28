@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import './home.scss';
+import Movie from '../Movie';
 import smallLogo from './images/logo-small.png';
+import largeLogo from './images/logo-large.png';
 
 class Home extends Component {
   constructor(props) {
@@ -10,6 +12,7 @@ class Home extends Component {
     this.state = {
       loading: true,
       moviesList: [],
+      selectedMovie: {},
     }
   }
 
@@ -45,7 +48,7 @@ class Home extends Component {
   }
 
   render() {
-    const { moviesList, loading } = this.state;
+    const { moviesList, loading, selectedMovie } = this.state;
 
     return(
       <div className="container">
@@ -80,6 +83,16 @@ class Home extends Component {
             </form>
           </section>
         </header>
+        <section className="container__main">
+          {
+            selectedMovie.opening_crawl ? 
+            <Movie movie={selectedMovie}/> : (
+              <div>
+                <img src={largeLogo} alt="" />
+              </div>
+            )
+          }                    
+        </section>
       </div>
     )
   }
