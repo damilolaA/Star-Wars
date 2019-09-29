@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import { abbrevateGender, heightInMetrics } from '../../utils';
+import { ASC, DESC } from '../../constants';
 import Loader from '../Loader';
 import "./movie.scss";
 
@@ -11,7 +12,9 @@ class Movie extends Component {
     this.state = {
       loading: true,
       characterList: [],
-      order: 'asc',
+      order: ASC,
+      genderOrder: ASC,
+      heightOrder: ASC,
     }
   } 
 
@@ -54,16 +57,38 @@ class Movie extends Component {
     const { characterList } = this.state;
     this.setState({
       characterList: characterList.sort((a, b) => {
-        return order === 'asc' ? a.name.localeCompare(b.name) : 
+        return order === ASC ? a.name.localeCompare(b.name) : 
         b.name.localeCompare(a.name);
       }),
-      order: order === 'asc' ? 'desc' : 'asc'
+      order: order === ASC ? DESC : ASC
+    });
+  }
+
+  sortCharacterGender = (genderOrder) => {
+    const { characterList } = this.state;
+    this.setState({
+      characterList: characterList.sort((a, b) => {
+        return genderOrder === ASC ? a.gender.localeCompare(b.gender) : 
+        b.gender.localeCompare(a.gender);
+      }),
+      genderOrder: genderOrder === ASC ? DESC : ASC
+    });
+  }
+
+  sortCharacterHeight = (heightOrder) => {
+    const { characterList } = this.state;
+    this.setState({
+      characterList: characterList.sort((a, b) => {
+        return heightOrder === ASC ? a.height - b.height : 
+        b.height - a.height
+      }),
+      heightOrder: heightOrder === ASC ? DESC : ASC
     });
   }
 
   render() {
     const { movie } = this.props;
-    const { characterList, loading, order } = this.state;
+    const { characterList, loading, order, genderOrder, heightOrder } = this.state;
 
     return(
       <div className="movie">
@@ -76,9 +101,15 @@ class Movie extends Component {
               <button onClick={() => this.sortCharacters(order)}> 
                 <thead>
                   <tr style={{ background: '#fff' }}>
-                    <th>Name</th>
-                    <th>Gender</th>
-                    <th>Height</th>
+                    <button onDoubleClick={() => this.sortCharacters(order)}>
+                      <th>Name</th>
+                    </button>
+                    <button onDoubleClick={() => this.sortCharacterGender(genderOrder)}>
+                      <th>Gender</th>
+                    </button>
+                    <button onDoubleClick={() => this.sortCharacterHeight(heightOrder)}>
+                      <th>Height</th>
+                    </button>
                   </tr>
                 </thead>
               </button>
