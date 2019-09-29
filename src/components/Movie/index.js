@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+import { abbrevateGender, heightInMetrics } from '../../utils';
 import Loader from '../Loader';
 import "./movie.scss";
 
@@ -15,6 +16,15 @@ class Movie extends Component {
 
   componentDidMount() {
     this.fetchCharacters();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.movie !== this.props.movie) {
+      this.setState({
+        loading: true
+      });
+      return this.fetchCharacters();
+    }
   }
 
   fetchCharacters = async() => {
@@ -63,11 +73,16 @@ class Movie extends Component {
                   characterList.length > 0 && characterList.map((character) => (
                     <tr key={character.name}>
                       <td>{character.name}</td>
-                      <td>{character.gender}</td>
+                      <td>{abbrevateGender(character.gender)}</td>
                       <td>{character.height}</td>
                     </tr>
                   ))
                 }
+                <tr>
+                  <td>{characterList.length > 0 &&  characterList.length}</td>
+                  <td>{}</td>
+                  <td>{heightInMetrics(characterList)}</td>
+                </tr>
               </tbody>
             </table>
           )
