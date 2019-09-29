@@ -124,10 +124,12 @@ class Movie extends Component {
         {
           loading ? <Loader /> : (
             <>
-             <div className="movie__crawl">
+            <div className="movie__crawl">
               <p className="animated fadeInUp">{movie.opening_crawl}</p>
             </div>
-            <GenderFilter handleFilter={this.handleFilter} />
+            <div className="movie__filter">
+              <GenderFilter handleFilter={this.handleFilter} />
+            </div>
             <table className="movie__table">
               <button onClick={() => this.sortCharacters(order)}> 
                 <thead>

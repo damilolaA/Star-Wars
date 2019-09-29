@@ -1,13 +1,20 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
-const GenderFilter = ({ handleFilter }) => {
+const styles = theme => ({
+  root: {
+    spacing: 4
+  }
+});
+
+const GenderFilter = ({ handleFilter, classes }) => {
   return(
     <div>
-      <FormControl>
+      <FormControl className={classes.root}>
         <InputLabel htmlFor="movies">Filter By Gender</InputLabel>
         <Select
           value={"gender"}
@@ -28,4 +35,4 @@ const GenderFilter = ({ handleFilter }) => {
   )
 }
 
-export default GenderFilter;
+export default withStyles(styles)(GenderFilter);

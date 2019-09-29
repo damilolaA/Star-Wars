@@ -70,7 +70,6 @@ class Home extends Component {
             <h1>Please Select A Movie</h1>
             <form>
               <Select 
-                // className="form-control"
                 className={classes.select}
                 value="movies"
                 onChange={this.handleChange}
@@ -80,7 +79,6 @@ class Home extends Component {
                   id: "movies"
                 }}
               >
-                <MenuItem>Select Movie</MenuItem>
                 {
                   moviesList.length > 0 && moviesList.map(movie => (
                     <MenuItem key={movie.release_date} value={movie}>
