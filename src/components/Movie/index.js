@@ -11,6 +11,7 @@ class Movie extends Component {
     this.state = {
       loading: true,
       characterList: [],
+      order: 'asc',
     }
   } 
 
@@ -49,9 +50,20 @@ class Movie extends Component {
     }
   }
 
+  sortCharacters = (order) => {
+    const { characterList } = this.state;
+    this.setState({
+      characterList: characterList.sort((a, b) => {
+        return order === 'asc' ? a.name.localeCompare(b.name) : 
+        b.name.localeCompare(a.name);
+      }),
+      order: order === 'asc' ? 'desc' : 'asc'
+    });
+  }
+
   render() {
     const { movie } = this.props;
-    const { characterList, loading } = this.state;
+    const { characterList, loading, order } = this.state;
 
     return(
       <div className="movie">
@@ -61,13 +73,15 @@ class Movie extends Component {
         {
           loading ? <Loader /> : (
             <table className="movie__table">
-              <thead>
-                <tr style={{ background: '#fff' }}>
-                  <th>Name</th>
-                  <th>Gender</th>
-                  <th>Height</th>
-                </tr>
-              </thead>
+              <button onClick={() => this.sortCharacters(order)}> 
+                <thead>
+                  <tr style={{ background: '#fff' }}>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Height</th>
+                  </tr>
+                </thead>
+              </button>
               <tbody>
                 {
                   characterList.length > 0 && characterList.map((character) => (
