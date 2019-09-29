@@ -118,12 +118,15 @@ class Movie extends Component {
 
     return(
       <div className="movie">
-        <div className="movie__crawl">
-          <p>{movie.opening_crawl}</p>
-        </div>
+        {/* <div className="movie__crawl">
+          <p className="animated fadeInUp">{movie.opening_crawl}</p>
+        </div> */}
         {
           loading ? <Loader /> : (
             <>
+             <div className="movie__crawl">
+              <p className="animated fadeInUp">{movie.opening_crawl}</p>
+            </div>
             <GenderFilter handleFilter={this.handleFilter} />
             <table className="movie__table">
               <button onClick={() => this.sortCharacters(order)}> 

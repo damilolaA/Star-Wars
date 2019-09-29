@@ -91,6 +91,19 @@ class Home extends Component {
               </Select>
             </form>
           </section>
+          <div className="container__header__banner-curve">
+            <svg
+              viewBox="0 0 1440 24"
+              fill="none"
+              xmlns="http:www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0 24H1440V0C722.5 52 0 0 0 0V24Z"
+                fill="#fff"
+              />
+            </svg>
+          </div>
         </header>
         <section className="container__main">
           {
