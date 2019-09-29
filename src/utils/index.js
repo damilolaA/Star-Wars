@@ -1,3 +1,5 @@
+import { CHARACTER_LIST } from '../constants';
+
 export const abbrevateGender = (gender) => {
   if(gender === 'n/a') return gender;
   if(gender === 'none') return gender;
@@ -20,4 +22,14 @@ export const heightInMetrics = (characterList) => {
   const value = totalHeightInCM(characterList);
   const heightInFeet = convertHeightToFeet(value);
   return `${value}cm (${heightInFeet})`;
+}
+
+export const saveCharacterList = (characterList) => {
+  const stringList = JSON.stringify(characterList);
+  localStorage.setItem(CHARACTER_LIST, stringList);
+}
+
+export const getCharacterList = () => {
+  const characterList = localStorage.getItem(CHARACTER_LIST);
+  return JSON.parse(characterList);
 }

@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { abbrevateGender, heightInMetrics } from '../../utils';
-import { ASC, DESC } from '../../constants';
+import GenderFilter from '../GenderFilter';
+import { 
+  abbrevateGender, 
+  heightInMetrics, 
+  saveCharacterList,
+  getCharacterList
+} from '../../utils';
+import { ASC, DESC, ALL } from '../../constants';
 import Loader from '../Loader';
 import "./movie.scss";
 
@@ -40,6 +46,7 @@ class Movie extends Component {
       const res = await Promise.all(characterResponse);
       if(res.length > 0) {
         const data = res.map(data => data.data);
+        saveCharacterList(data);
         this.setState({
           characterList: data,
           loading: false
@@ -86,6 +93,25 @@ class Movie extends Component {
     });
   }
 
+  handleFilter = (e) => {
+    const filterValue = e.target.value;
+    const characters = getCharacterList();
+
+    if(filterValue === ALL) {
+      return this.setState({
+        characterList: characters        
+      })
+    }
+
+    const genderFilter = characters.filter((character) => 
+      character.gender === filterValue
+    );
+
+    this.setState({
+      characterList: genderFilter
+    });
+  }
+
   render() {
     const { movie } = this.props;
     const { characterList, loading, order, genderOrder, heightOrder } = this.state;
@@ -97,6 +123,8 @@ class Movie extends Component {
         </div>
         {
           loading ? <Loader /> : (
+            <>
+            <GenderFilter handleFilter={this.handleFilter} />
             <table className="movie__table">
               <button onClick={() => this.sortCharacters(order)}> 
                 <thead>
@@ -130,6 +158,7 @@ class Movie extends Component {
                 </tr>
               </tbody>
             </table>
+            </>
           )
         }
       </div>
