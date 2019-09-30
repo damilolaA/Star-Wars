@@ -21,6 +21,7 @@ class Movie extends Component {
       order: ASC,
       genderOrder: ASC,
       heightOrder: ASC,
+      filterName: ""
     }
   } 
 
@@ -96,10 +97,11 @@ class Movie extends Component {
   handleFilter = (e) => {
     const filterValue = e.target.value;
     const characters = getCharacterList();
-
+    
     if(filterValue === ALL) {
       return this.setState({
-        characterList: characters        
+        characterList: characters,
+        filterName: filterValue        
       })
     }
 
@@ -108,61 +110,68 @@ class Movie extends Component {
     );
 
     this.setState({
-      characterList: genderFilter
+      characterList: genderFilter,
+      filterName: filterValue        
     });
   }
 
   render() {
     const { movie } = this.props;
-    const { characterList, loading, order, genderOrder, heightOrder } = this.state;
+    const { characterList, loading, order, genderOrder, heightOrder, filterName } = this.state;
 
     return(
       <div className="movie">
-        {/* <div className="movie__crawl">
-          <p className="animated fadeInUp">{movie.opening_crawl}</p>
-        </div> */}
+        <div className="movie__crawl">
+          <h2>{movie.title}</h2>
+          <p className="animated-text">{movie.opening_crawl}</p>
+        </div>
         {
           loading ? <Loader /> : (
             <>
-            <div className="movie__crawl">
-              <p className="animated fadeInUp">{movie.opening_crawl}</p>
-            </div>
             <div className="movie__filter">
-              <GenderFilter handleFilter={this.handleFilter} />
+              <GenderFilter handleFilter={this.handleFilter} filterName={filterName} />
             </div>
-            <table className="movie__table">
-              <button onClick={() => this.sortCharacters(order)}> 
+            <section 
+              style={{
+                background: `#fff`,
+                padding: `20px`,
+                borderRadius: `10px`,
+                maxHeight: `450px`,
+                overflowY: `scroll`
+              }}
+            >
+              <table className="movie__table">
                 <thead>
-                  <tr style={{ background: '#fff' }}>
-                    <button onDoubleClick={() => this.sortCharacters(order)}>
-                      <th>Name</th>
-                    </button>
-                    <button onDoubleClick={() => this.sortCharacterGender(genderOrder)}>
-                      <th>Gender</th>
-                    </button>
-                    <button onDoubleClick={() => this.sortCharacterHeight(heightOrder)}>
-                      <th>Height</th>
-                    </button>
+                  <tr onClick={() => this.sortCharacters(order)}>
+                    <th onDoubleClick={() => this.sortCharacters(order)}>
+                      Name
+                    </th>
+                    <th onDoubleClick={() => this.sortCharacterGender(genderOrder)}>
+                      Gender
+                    </th>
+                    <th onDoubleClick={() => this.sortCharacterHeight(heightOrder)}>
+                      Height
+                    </th>
                   </tr>
                 </thead>
-              </button>
-              <tbody>
-                {
-                  characterList.length > 0 && characterList.map((character) => (
-                    <tr key={character.name}>
-                      <td>{character.name}</td>
-                      <td>{abbrevateGender(character.gender)}</td>
-                      <td>{character.height}</td>
-                    </tr>
-                  ))
-                }
-                <tr>
-                  <td>{characterList.length > 0 &&  characterList.length}</td>
-                  <td>{}</td>
-                  <td>{heightInMetrics(characterList)}</td>
-                </tr>
-              </tbody>
-            </table>
+                <tbody>
+                  {
+                    characterList.length > 0 && characterList.map((character) => (
+                      <tr key={character.name}>
+                        <td>{character.name}</td>
+                        <td>{abbrevateGender(character.gender)}</td>
+                        <td>{character.height}</td>
+                      </tr>
+                    ))
+                  }
+                  <tr>
+                    <td>{characterList.length > 0 &&  characterList.length}</td>
+                    <td>{}</td>
+                    <td>{heightInMetrics(characterList)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
             </>
           )
         }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import './home.scss';
@@ -18,6 +19,7 @@ class Home extends Component {
       loading: true,
       moviesList: [],
       selectedMovie: {},
+      movieName: ''
     }
   }
 
@@ -48,11 +50,14 @@ class Home extends Component {
   }
 
   handleChange = (e) => {
-    this.setState({ selectedMovie: e.target.value});
+    this.setState({ 
+      selectedMovie: e.target.value,
+      movieName: e.target.value.title
+    });
   }
 
   render() {
-    const { moviesList, loading, selectedMovie } = this.state;
+    const { moviesList, loading, selectedMovie, movieName } = this.state;
     const { classes } = this.props;
 
     return(
@@ -68,26 +73,29 @@ class Home extends Component {
         <header className="container__header">
           <section className="container__header__dropdown">
             <h1>Please Select A Movie</h1>
+            <FormControl>
             <form>
-              <Select 
-                className={classes.select}
-                value="movies"
-                onChange={this.handleChange}
-                disabled={loading}
-                inputProps={{
-                  name: "Select Movie",
-                  id: "movies"
-                }}
-              >
-                {
-                  moviesList.length > 0 && moviesList.map(movie => (
-                    <MenuItem key={movie.release_date} value={movie}>
-                      {movie.title}
-                    </MenuItem>
-                  ))
-                }
-              </Select>
+                <Select 
+                  className={classes.select}
+                  value={movieName}
+                  renderValue={() => movieName}
+                  onChange={this.handleChange}
+                  disabled={loading}
+                  inputProps={{
+                    name: "movieName",
+                    id: "movies"
+                  }}
+                >
+                  {
+                    moviesList.length > 0 && moviesList.map(movie => (
+                      <MenuItem key={movie.release_date} value={movie}>
+                        {movie.title}
+                      </MenuItem>
+                    ))
+                  }
+                </Select>
             </form>
+            </FormControl>
           </section>
           <div className="container__header__banner-curve">
             <svg

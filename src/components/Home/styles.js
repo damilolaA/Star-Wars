@@ -1,7 +1,8 @@
 const styles = (theme => ({
   select: {
     background: 'white',
-    width: 200
+    width: 200,
+    color: 'black',
   }
 }));
 
