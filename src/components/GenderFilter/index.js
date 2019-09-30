@@ -18,10 +18,10 @@ const GenderFilter = ({ handleFilter, filterName }) => {
           <MenuItem value={"All"}>
             ALL
           </MenuItem>
-          <MenuItem value={"Male"}>
+          <MenuItem value={"male"}>
             MALE
           </MenuItem>
-          <MenuItem value={"Female"}>
+          <MenuItem value={"female"}>
             FEMALE
           </MenuItem>
         </Select>
