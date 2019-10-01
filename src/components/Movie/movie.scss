@@ -66,6 +66,17 @@
       padding-left: 15px;
       padding-right: 40px;
       background: #fff;
+      position: relative;
+
+      &:hover {
+        &::before {
+          content: url(./images/sort.svg);
+          position: absolute;
+          top: 12px;
+          right: 15px;
+          width: 15px;
+        }
+      }
     }
 
     tr {
@@ -81,6 +92,10 @@
         padding: 20px;
         text-align: left;
       }
+    }
+
+    &-data {
+      font-weight: bold;
     }
   }
 }
@@ -105,4 +120,19 @@
   animation-duration: 1s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
+}
+
+.sort-icon {
+  color: #d83337d4;
+  background: #d833372b;
+  padding: 0;
+  margin: 0;
+  width: 35px;
+  height: 35px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 20px;
+  margin-right: 11px;
 }

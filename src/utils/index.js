@@ -21,7 +21,7 @@ const convertHeightToFeet = (heightInCm) => {
 export const heightInMetrics = (characterList) => {
   const value = totalHeightInCM(characterList);
   const heightInFeet = convertHeightToFeet(value);
-  return `${value}cm (${heightInFeet})`;
+  return `${value} cm (${heightInFeet})`;
 }
 
 export const saveCharacterList = (characterList) => {

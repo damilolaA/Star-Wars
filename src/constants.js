@@ -1,4 +1,9 @@
 export const ASC = "asc";
 export const DESC = "desc";
 export const CHARACTER_LIST = "characters";
-export const ALL = "All";
+export const ALL = "all";
+export const MALE = "male";
+export const FEMALE = "female";
+export const OTHERS = "others";
+export const MOVIES_ERROR = "An error occurred while fetching movies. Please try again";
+export const CHARACTER_ERROR = "An error occurred while fetching movie characters";

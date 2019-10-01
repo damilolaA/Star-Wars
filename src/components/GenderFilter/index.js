@@ -3,6 +3,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import { ALL, FEMALE, MALE, OTHERS } from '../../constants';
 
 
 const GenderFilter = ({ handleFilter, filterName }) => {
@@ -12,17 +13,19 @@ const GenderFilter = ({ handleFilter, filterName }) => {
         <InputLabel htmlFor="movies">Filter By Gender</InputLabel>
         <Select
           value={filterName}
-          renderValue={() => filterName}
           onChange={(e) => handleFilter(e)}
         >
-          <MenuItem value={"All"}>
-            ALL
+          <MenuItem value={ALL}>
+            All
           </MenuItem>
-          <MenuItem value={"male"}>
-            MALE
+          <MenuItem value={MALE}>
+            Male
           </MenuItem>
-          <MenuItem value={"female"}>
-            FEMALE
+          <MenuItem value={FEMALE}>
+            Female
+          </MenuItem>
+          <MenuItem value={OTHERS}>
+            Others
           </MenuItem>
         </Select>
       </FormControl>
