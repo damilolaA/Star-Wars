@@ -1,4 +1,18 @@
 
+@mixin screen($size, $type: max, $pixels: 600) {
+  @if $size=='tiny' {
+    @media screen and (max-width: 400px) {
+      @content;
+    }
+  }
+
+  @if $size=='small' {
+    @media screen and (max-width: 767px) {
+      @content;
+    }
+  }
+}
+
 .movie {
   display: block;
   width: 50%;
@@ -41,61 +55,73 @@
     }
   }
 
-  &__table {
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-    // align-items: center;
-    width: 100%;
-    table-layout: fixed;
+  &__section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-height: 450px;
+    overflow-y: scroll;
 
-    button{
+    &__table {
+      // display: flex;
+      // flex-direction: column;
+      // justify-content: center;
+      // align-items: center;
       width: 100%;
-      display: flex;
-      -webkit-appearance: none;
-      border: none;
-    }
-
-    th {
-      border-top: none;
-      color: #525f7f;
-      font-weight: 500;
-      font-size: 0.9rem;
-      border-bottom: none;
-      text-align: left;
-      padding-left: 15px;
-      padding-right: 40px;
-      background: #fff;
-      position: relative;
-
-      &:hover {
-        &::before {
-          content: url(./images/sort.svg);
-          position: absolute;
-          top: 12px;
-          right: 15px;
-          width: 15px;
+      table-layout: fixed;
+  
+      @include screen(small) {
+        table-layout: auto;
+      }
+  
+      button{
+        width: 100%;
+        display: flex;
+        -webkit-appearance: none;
+        border: none;
+      }
+  
+      th {
+        border-top: none;
+        color: #525f7f;
+        font-weight: 500;
+        font-size: 0.9rem;
+        border-bottom: none;
+        text-align: left;
+        padding-left: 15px;
+        padding-right: 40px;
+        background: #fff;
+        position: relative;
+  
+        &:hover {
+          &::before {
+            content: url(./images/sort.svg);
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            width: 15px;
+          }
         }
       }
-    }
-
-    tr {
-      height: 50px;
-      &:nth-of-type(odd) {
-        background-color: #fbfdff;
+  
+      tr {
+        height: 50px;
+        &:nth-of-type(odd) {
+          background-color: #fbfdff;
+        }
+  
+        td {
+          color: #525f7f;
+          vertical-align: middle;
+          border-top: 1px solid #f1f1f1;
+          padding: 20px;
+          text-align: left;
+        }
       }
-
-      td {
-        color: #525f7f;
-        vertical-align: middle;
-        border-top: 1px solid #f1f1f1;
-        padding: 20px;
-        text-align: left;
+  
+      &-data {
+        font-weight: bold;
       }
-    }
-
-    &-data {
-      font-weight: bold;
     }
   }
 }

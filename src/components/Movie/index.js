@@ -140,15 +140,16 @@ class Movie extends Component {
                 <GenderFilter handleFilter={this.handleFilter} filterName={filterName} />
               </div>
               <section
-                style={{
-                  background: '#fff',
-                  padding: '20px',
-                  borderRadius: '10px',
-                  maxHeight: '450px',
-                  overflowY: 'scroll'
-                }}
+                className="movie__section"
+                // style={{
+                //   background: '#fff',
+                //   padding: '20px',
+                //   borderRadius: '10px',
+                //   maxHeight: '450px',
+                //   overflowY: 'scroll'
+                // }}
               >
-                <table className="movie__table">
+                <table className="movie__section__table">
                   <thead>
                     <tr onClick={() => this.sortCharacters(order)}>
                       <th onDoubleClick={() => this.sortCharacters(order)}>
@@ -173,9 +174,9 @@ class Movie extends Component {
                       ))
                     }
                     <tr>
-                      <td className="movie__table-data">{characterList.length > 0 && characterList.length}</td>
+                      <td className="movie__section__table-data">{characterList.length > 0 && characterList.length}</td>
                       <td>{}</td>
-                      <td className="movie__table-data">{heightInMetrics(characterList)}</td>
+                      <td className="movie__section__table-data">{heightInMetrics(characterList)}</td>
                     </tr>
                   </tbody>
                 </table>
