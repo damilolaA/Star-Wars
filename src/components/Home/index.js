@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import axios from "axios";
 import { withStyles } from "@material-ui/core/styles";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
@@ -10,7 +9,7 @@ import Movie from "../Movie";
 import styles from "./styles.js";
 import smallLogo from "./images/logo-small.png";
 import largeLogo from "./images/logo-large.png";
-import { MOVIES_ERROR } from "../../constants";
+import { MOVIES_ERROR } from "../../utils/constants";
 import { ToastContext } from '../../providers/toast.provider'
 
 
@@ -18,9 +17,10 @@ const fetchMovies = async (setMoviesState, toastData) => {
   const url = process.env.REACT_APP_BASE_API_URL;
   
   try {
-    const res = await axios.get(url);
-    if (res.data && res.status === 200) {
-      const { results } = res.data;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (res.status === 200) {
+      const { results } = data;
       const sortedMovieList = results.sort((a, b) => {
         return new Date(a.release_date) - new Date(b.release_date);
       });

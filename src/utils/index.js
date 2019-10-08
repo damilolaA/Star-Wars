@@ -1,4 +1,4 @@
-import { CHARACTER_LIST } from '../constants';
+import { CHARACTER_LIST } from './constants';
 
 export const abbrevateGender = (gender) => {
   if(gender === 'n/a') return gender;
@@ -12,9 +12,9 @@ const totalHeightInCM = (characterList) => {
 }
 
 const convertHeightToFeet = (heightInCm) => {
-  var inches = (heightInCm * 0.393700787).toFixed(2);
-  var feet = Math.floor(inches / 12);
-  var newInches = (inches %= 12).toFixed(2);
+  let inches = (heightInCm * 0.393700787).toFixed(2);
+  const feet = Math.floor(inches / 12);
+  const newInches = (inches %= 12).toFixed(2);
   return `${feet}ft/${newInches}in`;
 }
 

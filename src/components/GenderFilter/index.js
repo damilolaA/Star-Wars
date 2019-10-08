@@ -3,7 +3,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { ALL, FEMALE, MALE, OTHERS } from '../../constants';
+import { ALL, FEMALE, MALE, OTHERS } from '../../utils/constants';
 
 
 const GenderFilter = ({ handleFilter, filterName }) => {
