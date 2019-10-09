@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 
 import GenderFilter from '../GenderFilter';
 import {
@@ -8,185 +7,232 @@ import {
   saveCharacterList,
   getCharacterList
 } from '../../utils';
-import { ASC, DESC, ALL, FEMALE, MALE, OTHERS, CHARACTER_ERROR } from '../../constants';
+import { ASC, DESC, ALL, CHARACTER_ERROR, ASCENDING, DESCENDING } from '../../utils/constants';
 import Loader from '../Loader';
 import "./movie.scss";
+import { ToastContext } from '../../providers/toast.provider';
 
-class Movie extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-      characterList: [],
-      order: ASC,
-      genderOrder: ASC,
-      heightOrder: ASC,
-      filterName: ""
-    }
-  }
 
-  componentDidMount() {
-    this.fetchCharacters();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.movie !== this.props.movie) {
-      this.setState({
-        loading: true
-      });
-      return this.fetchCharacters();
-    }
-  }
-
-  fetchCharacters = async () => {
-    const { movie } = this.props;
-    try {
-      const characterResponse = movie.characters.map(url => {
-        return axios.get(url);
-      });
-      const res = await Promise.all(characterResponse);
-      if (res.length > 0) {
-        const data = res.map(data => data.data);
-        saveCharacterList(data);
-        this.setState({
-          characterList: data,
+const fetchCharacters = async (props, toast, setMovieState) => {
+  const { movie } = props;
+  try {
+    const cachedCharacterList = getCharacterList();
+    console.log('cachedCharacterList', cachedCharacterList);
+    if(cachedCharacterList != null) {
+      const filteredMovie = cachedCharacterList.filter(movieItem => movieItem.title === movie.title);
+      console.log('filteredMovie', filteredMovie);
+      if(filteredMovie.length > 0) {
+        setMovieState(prevState => {
+          return{
+            ...prevState,
+            characterList: filteredMovie.data
+          }
         });
-      }else {
-        return window.showToast('5', CHARACTER_ERROR);
-      }
-    } catch (error) {
-      return window.showToast('5', CHARACTER_ERROR);
-    }finally {
-      this.setState({
-        loading: false
-      });
+      };
     }
-  }
+    const characterResponse = movie.characters.map(async (url) => {
+      return await fetch(url);
+    });
+    const res = await Promise.all(characterResponse);
 
-  sortCharacters = (order) => {
-    const { characterList } = this.state;
-    const sortedList = characterList.sort((a, b) =>
-      order === ASC ? a.name.localeCompare(b.name) :
-        b.name.localeCompare(a.name)
-    );
+    if (res.length > 0) {
+      let data = [];
+      for(const item of res) {
+        const itemData = await item.json();
+        data.push(itemData);
+      }
 
-    this.setState({
-      characterList: sortedList,
-      order: order === ASC ? DESC : ASC
+      saveCharacterList(movie.title, data);
+      setMovieState(prevState => {
+        return{
+          ...prevState,
+          characterList: data
+        }
+      });
+    }else {
+      return toast.current.showToast('5', CHARACTER_ERROR);
+    }
+  } catch (error) {
+    return toast.current.showToast('5', CHARACTER_ERROR);
+  }finally {
+    setMovieState(prevState => {
+      return{
+        ...prevState,
+        loading: false,
+      }
     });
   }
+}
 
-  sortCharacterGender = (genderOrder) => {
-    const { characterList } = this.state;
-    const sortedList = characterList.sort((a, b) => 
-      genderOrder === ASC ? a.gender.localeCompare(b.gender) :
-        b.gender.localeCompare(a.gender)
-    );
-    this.setState({
+const sortCharacters = (state, setMovieState) => {
+  const { characterList, order } = state;
+  const sortedList = characterList.sort((a, b) =>
+    order === ASC ? b.name.localeCompare(a.name) :
+      a.name.localeCompare(b.name)
+  );
+
+  setMovieState(prevState => {
+    return{
+      ...prevState,
       characterList: sortedList,
-      genderOrder: genderOrder === ASC ? DESC : ASC
-    });
-  }
+      order: order === ASC ? DESC : ASC,
+      sortTypeNum: 1,
+    }
+  });
+}
 
-  sortCharacterHeight = (heightOrder) => {
-    const { characterList } = this.state;
-    const sortedList = characterList.sort((a, b) => 
-      heightOrder === ASC ? a.height - b.height :
-        b.height - a.height
-    );
-    this.setState({
+const sortCharacterGender = (state, setMovieState) => {
+  const { characterList, genderOrder } = state;
+  const sortedList = characterList.sort((a, b) => 
+    genderOrder === ASC ? b.gender.localeCompare(a.gender) : 
+      a.gender.localeCompare(b.gender)
+  );
+  setMovieState(prevState => {
+    return {
+      ...prevState,
       characterList: sortedList,
-      heightOrder: heightOrder === ASC ? DESC : ASC
-    });
-  }
+      genderOrder: genderOrder === ASC ? DESC : ASC,
+      sortTypeNum: 2,
+    }
+  });
+}
 
-  handleFilter = (e) => {
+const sortCharacterHeight = (state, setMovieState) => {
+  const { characterList, heightOrder } = state;
+  const sortedList = characterList.sort((a, b) => 
+    heightOrder === ASC ?  b.height - a.height : 
+      a.height - b.height
+  );
+  setMovieState(prevState => {
+    return {
+      ...prevState,
+      characterList: sortedList,
+      heightOrder: heightOrder === ASC ? DESC : ASC,
+      sortTypeNum: 3,
+    }
+  });
+}
+
+function Movie(props) {
+
+  const [ state, setMovieState ] = useState({
+    loading: true,
+    characterList: [],
+    order: ASC,
+    genderOrder: ASC,
+    heightOrder: ASC,
+    filterName: "",
+    sortTypeNum: 0
+  });
+
+  const toastData = useRef(useContext(ToastContext));
+
+  useEffect(() => {
+    fetchCharacters(props, toastData, setMovieState);
+  }, [props]);
+
+  const handleFilter = (e) => {
     const filterValue = e.target.value;
     const characters = getCharacterList();
+    
+    const filteredMovie = characters.filter(movieItem => movieItem.title === props.movie.title);
 
     if (filterValue === ALL) {
-      return this.setState({
-        characterList: characters,
-        filterName: filterValue
-      })
-    }
-
-    const genderFilter = characters.filter((character) => {
-      if (filterValue === OTHERS) return character.gender !== MALE && character.gender !== FEMALE
-
-      return character.gender === filterValue
-    });
-
-    this.setState({
-      characterList: genderFilter,
-      filterName: filterValue
-    });
-  }
-
-  render() {
-    const { movie } = this.props;
-    const { characterList, loading, order, genderOrder, heightOrder, filterName } = this.state;
-
-    return (
-      <div className="movie">
-        <div className="movie__crawl">
-          <h2>{movie.title}</h2>
-          <p className="animated-text">{movie.opening_crawl}</p>
-        </div>
-        {
-          loading ? <Loader /> : (
-            <>
-              <div className="movie__filter">
-                <GenderFilter handleFilter={this.handleFilter} filterName={filterName} />
-              </div>
-              <section
-                className="movie__section"
-                // style={{
-                //   background: '#fff',
-                //   padding: '20px',
-                //   borderRadius: '10px',
-                //   maxHeight: '450px',
-                //   overflowY: 'scroll'
-                // }}
-              >
-                <table className="movie__section__table">
-                  <thead>
-                    <tr onClick={() => this.sortCharacters(order)}>
-                      <th onDoubleClick={() => this.sortCharacters(order)}>
-                        Name
-                    </th>
-                      <th onDoubleClick={() => this.sortCharacterGender(genderOrder)}>
-                        Gender
-                    </th>
-                      <th onDoubleClick={() => this.sortCharacterHeight(heightOrder)}>
-                        Height
-                    </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {
-                      characterList.length > 0 && characterList.map((character) => (
-                        <tr key={character.name}>
-                          <td>{character.name}</td>
-                          <td>{abbrevateGender(character.gender)}</td>
-                          <td>{character.height}</td>
-                        </tr>
-                      ))
-                    }
-                    <tr>
-                      <td className="movie__section__table-data">{characterList.length > 0 && characterList.length}</td>
-                      <td>{}</td>
-                      <td className="movie__section__table-data">{heightInMetrics(characterList)}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
-            </>
-          )
+      return setMovieState(prevState => {
+        return{
+          ...prevState,
+          characterList: filteredMovie.data,
+          filterName: filterValue,
+          sortTypeNum: 0
         }
-      </div>
-    );
+      });
+    }
+    
+    console.log('characters', filteredMovie);
+    const genderFilter = filteredMovie.map(item => item.data).filter((character) => character.gender === filterValue);
+    console.log('genderFilter', genderFilter);
+    setMovieState(prevState => {
+      return{
+        ...prevState,
+        characterList: genderFilter,
+        filterName: filterValue,
+        sortTypeNum: 0
+      }
+    });
   }
+
+  const { movie } = props;
+  const { loading, characterList, order, genderOrder, heightOrder, sortTypeNum, filterName } = state;
+
+  return(
+    <div className="movie">
+      <div className="movie__crawl">
+        <h2>{movie.title}</h2>
+        <p className="animated-text">{movie.opening_crawl}</p>
+      </div>
+      {
+        loading ? <Loader /> : (
+          <>
+            <div className="movie__filter">
+              <GenderFilter handleFilter={handleFilter} filterName={filterName} />
+            </div>
+            <section
+              className="movie__section"
+            >
+              <table className="movie__section__table">
+                <thead>
+                  <tr 
+                    onClick={() => sortCharacters(state, setMovieState)}
+                  >
+                    <th 
+                      onDoubleClick={() => sortCharacters(state, setMovieState)}
+                    >
+                      Name
+                      <p>{sortTypeNum === 1 && (order === ASC ? ASCENDING : DESCENDING)}</p>
+                  </th>
+                    <th 
+                      onDoubleClick={() => sortCharacterGender(state, setMovieState)}
+                    >
+                      Gender
+                      <p>{sortTypeNum === 2 && (genderOrder === ASC ? ASCENDING : DESCENDING)}</p>
+                  </th>
+                    <th 
+                      onDoubleClick={() => sortCharacterHeight(state, setMovieState)}
+                    >
+                      {"Height In Cm & Feet"}
+                      <p>{sortTypeNum === 3 && (heightOrder === ASC ? ASCENDING : DESCENDING)}</p>
+                  </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    characterList && characterList.length > 0 && characterList.map((character) => (
+                      <tr key={character.name}>
+                        <td>{character.name}</td>
+                        <td>{abbrevateGender(character.gender)}</td>
+                        <td>{character.height}</td>
+                      </tr>
+                    ))
+                  }
+                  <tr>
+                    <td className="movie__section__table-data">
+                      <span><p>Total Characters</p></span>
+                      {characterList.length > 0 && characterList.length}
+                    </td>
+                    <td>{}</td>
+                    <td className="movie__section__table-data">
+                      <span><p>Total Characters Height</p></span>
+                      {heightInMetrics(characterList)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </>
+        )
+      }
+    </div>
+  );
 }
 
 export default Movie;
