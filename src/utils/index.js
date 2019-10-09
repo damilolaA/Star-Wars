@@ -1,9 +1,7 @@
 import { CHARACTER_LIST } from './constants';
 
 export const abbrevateGender = (gender) => {
-  if(gender === 'n/a') return gender;
-  if(gender === 'none') return gender;
-  return gender.split(' ')[0].slice(0, 1);
+  return gender.split(' ').map(v => v[0].toUpperCase());
 }
 
 const totalHeightInCM = (characterList) => {
@@ -24,9 +22,23 @@ export const heightInMetrics = (characterList) => {
   return `${value} cm (${heightInFeet})`;
 }
 
-export const saveCharacterList = (characterList) => {
-  const stringList = JSON.stringify(characterList);
-  localStorage.setItem(CHARACTER_LIST, stringList);
+export const saveCharacterList = (title, characterList) => {
+  const movieData = {"title": title, "data": characterList};
+  let currentMovieList = getCharacterList();
+
+  if(currentMovieList == null) {
+    let list = [];
+    list.push(movieData);
+    const movieDataList = JSON.stringify(list);
+    localStorage.setItem(CHARACTER_LIST, movieDataList);
+  }else {
+    const filteredMovie = currentMovieList.filter(movie => movie.title === title);
+    
+    if(filteredMovie.length > 0) return;
+    currentMovieList.push(movieData);
+    const movieDataList = JSON.stringify(currentMovieList);
+    localStorage.setItem(CHARACTER_LIST, movieDataList); 
+  }
 }
 
 export const getCharacterList = () => {
