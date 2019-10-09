@@ -10,7 +10,7 @@ import styles from "./styles.js";
 import smallLogo from "./images/logo-small.png";
 import largeLogo from "./images/logo-large.png";
 import { MOVIES_ERROR } from "../../utils/constants";
-import { ToastContext } from '../../providers/toast.provider'
+import { ToastContext } from '../../providers/toast.provider';
 
 
 const fetchMovies = async (setMoviesState, toastData) => {
