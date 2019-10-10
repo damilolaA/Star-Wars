@@ -1,21 +1,15 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { withStyles } from "@material-ui/core/styles";
-import Select from "@material-ui/core/Select";
-import FormControl from "@material-ui/core/FormControl";
-import MenuItem from "@material-ui/core/MenuItem";
+import Select from 'react-select';
 
 import "./home.scss";
 import Movie from "../Movie";
-import styles from "./styles.js";
-import smallLogo from "./images/logo-small.png";
-import largeLogo from "./images/logo-large.png";
+import logo from "./images/logo.png";
 import { MOVIES_ERROR } from "../../utils/constants";
-import { ToastContext } from '../../providers/toast.provider';
-
+import { ToastContext } from "../../providers/toast.provider";
 
 const fetchMovies = async (setMoviesState, toastData) => {
   const url = process.env.REACT_APP_BASE_API_URL;
-  
+
   try {
     const res = await fetch(url);
     const data = await res.json();
@@ -23,34 +17,34 @@ const fetchMovies = async (setMoviesState, toastData) => {
       const { results } = data;
       const sortedMovieList = results.sort((a, b) => {
         return new Date(a.release_date) - new Date(b.release_date);
+      }).map(item => {
+        return({
+          value: item,
+          label: item.title
+        })
       });
+
       setMoviesState({
         moviesList: sortedMovieList,
-        loading: false,
+        loading: false
       });
     } else {
-      return toastData.current.showToast(
-        5,
-        MOVIES_ERROR
-      );
+      return toastData.current.showToast(5, MOVIES_ERROR);
     }
   } catch (error) {
-    return toastData.current.showToast(
-      5,
-      MOVIES_ERROR
-    );
+    return toastData.current.showToast(5, MOVIES_ERROR);
   }
-};  
+};
 
-function HomeComponent(props) {
+function Home() {
   const [moviesState, setMoviesState] = useState({
-    loading: false,
+    loading: true,
     moviesList: []
   });
 
-  const [movieName, setMovieName] = useState("")
+  const [movieName, setMovieName] = useState("");
 
-  const [selectedMovie, setSelectedMovie] = useState({})
+  const [selectedMovie, setSelectedMovie] = useState({});
 
   const toastData = useRef(useContext(ToastContext));
 
@@ -58,72 +52,54 @@ function HomeComponent(props) {
     fetchMovies(setMoviesState, toastData);
   }, []);
 
-  const handleChange = (e) => {
-    setMovieName(e.target.value.title);
-    setSelectedMovie(e.target.value);
+  const handleChange = selectedOption => {
+    setMovieName(selectedOption.value.title);
+    setSelectedMovie(selectedOption.value);
   };
 
-  const { classes } = props;
   const { loading, moviesList } = moviesState;
 
   return (
     <div className="container">
       <nav className="container__navigation">
         <div>
-          <img src={smallLogo} alt="" />
-        </div>
-        <div>
           <p>Star Wars Movies</p>
         </div>
       </nav>
-      <header className="container__header">
-        <section className="container__header__dropdown">
-          <h1>Please Select A Movie</h1>
-          <FormControl>
-            <form>
-              <Select
-                className={classes.select}
-                value={loading ? "loading..." : movieName}
-                renderValue={() => loading ? "loading..." : movieName}
-                onChange={e => handleChange(e)}
-                disabled={loading}
-                inputProps={{
-                  name: "movieName",
-                  id: "movies"
-                }}
-              >
-                {moviesList.length > 0 &&
-                  moviesList.map(movie => (
-                    <MenuItem key={movie.release_date} value={movie}>
-                      {movie.title}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </form>
-          </FormControl>
-        </section>
-        <div className="container__header__banner-curve">
-          <svg
-            viewBox="0 0 1440 24"
-            fill="none"
-            xmlns="http:www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-          >
-            <path d="M0 24H1440V0C722.5 52 0 0 0 0V24Z" fill="#fff" />
-          </svg>
+      <section className="container__header">
+        <div className="container__header__dropdown">
+          <img src={logo} alt="" />
+          <h1>The Starwars Movie Library </h1>
+          <p>
+            This is a modest collection of Starwars titles and relative
+            information
+          </p>
+          <form>
+            <Select 
+              className="form-control"
+              onChange={selectedOption => handleChange(selectedOption)}
+              placeholder= {movieName !== "" ? movieName : "Select Movie"}
+              options={moviesList}
+              isLoading={loading}
+              autoFocus={true}
+            />
+          </form>
         </div>
-      </header>
-      <section className="container__main">
-        {selectedMovie.opening_crawl ? (
-          <Movie key={selectedMovie.release_date} movie={selectedMovie} />
-        ) : (
-          <div>
-            <img src={largeLogo} alt="" />
-          </div>
-        )}
+        <div className="container__main">
+          {selectedMovie.opening_crawl ? (
+            <Movie key={selectedMovie.release_date} movie={selectedMovie} />
+          ) : (
+            <div>{
+              <img src={logo} alt="" />
+            }</div>
+          )}
+        </div>
       </section>
+      <div className="container__footer">
+        <p>“Remember…the Force will be with you, always.” — Obi Wan Kenobi</p>
+      </div>
     </div>
-  ); 
+  );
 }
 
-export default withStyles(styles)(HomeComponent);
+export default Home;
