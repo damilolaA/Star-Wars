@@ -17,7 +17,10 @@
   display: block;
   width: 50%;
   color: #525f7f;
-
+  @media only screen and (max-width: 768px) {
+    width: 90%;
+  }
+  
   &__crawl {
     display: flex;
     align-items: center;
@@ -26,6 +29,7 @@
 
     h2 {
       margin: 5px 0 15px;
+      color: #352c2c;
     }
 
     p{
@@ -33,6 +37,7 @@
       opacity: .8;
       padding: 5px 0 35px;
       margin: 5px 0 10px;
+      color: #352c2c;
     }
   }
 

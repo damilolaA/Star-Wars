@@ -17,10 +17,8 @@ const fetchCharacters = async (props, toast, setMovieState) => {
   const { movie } = props;
   try {
     const cachedCharacterList = getCharacterList();
-    console.log('cachedCharacterList', cachedCharacterList);
     if(cachedCharacterList != null) {
       const filteredMovie = cachedCharacterList.filter(movieItem => movieItem.title === movie.title);
-      console.log('filteredMovie', filteredMovie);
       if(filteredMovie.length > 0) {
         setMovieState(prevState => {
           return{
@@ -132,25 +130,23 @@ function Movie(props) {
   }, [props]);
 
   const handleFilter = (e) => {
-    const filterValue = e.target.value;
+    const filterValue = e.value;
     const characters = getCharacterList();
     
     const filteredMovie = characters.filter(movieItem => movieItem.title === props.movie.title);
-
+    
     if (filterValue === ALL) {
       return setMovieState(prevState => {
         return{
           ...prevState,
-          characterList: filteredMovie.data,
+          characterList: filteredMovie[0].data,
           filterName: filterValue,
           sortTypeNum: 0
         }
       });
     }
+    const genderFilter = filteredMovie[0].data.map(item => item).filter(character => character.gender === filterValue);
     
-    console.log('characters', filteredMovie);
-    const genderFilter = filteredMovie.map(item => item.data).filter((character) => character.gender === filterValue);
-    console.log('genderFilter', genderFilter);
     setMovieState(prevState => {
       return{
         ...prevState,
