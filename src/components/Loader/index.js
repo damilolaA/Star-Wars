@@ -1,21 +1,12 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import './loader.scss';
 
-const styles = (theme => ({
-  progress: {
-    margin: theme.spacing(10),
-    color: "black"
-  }
-}))
+const Loader = () => (
+  <div>
+    <svg class="loader" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="30"></circle>
+    </svg>
+  </div>
+);
 
-const Loader = ({ classes }) => {
-  return(
-    <CircularProgress
-      className={classes.progress}
-      size={24}
-    />
-  );
-}
-
-export default withStyles(styles)(Loader);
+export default Loader;
