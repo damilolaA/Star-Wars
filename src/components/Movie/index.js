@@ -12,34 +12,20 @@ import Loader from '../Loader';
 import "./movie.scss";
 import { ToastContext } from '../../providers/toast.provider';
 
-
-const fetchCharacters = async (props, toast, setMovieState) => {
-  const { movie } = props;
-  try {
-    const cachedCharacterList = getCharacterList();
-    if(cachedCharacterList != null) {
-      const filteredMovie = cachedCharacterList.filter(movieItem => movieItem.title === movie.title);
-      if(filteredMovie.length > 0) {
-        setMovieState(prevState => {
-          return{
-            ...prevState,
-            characterList: filteredMovie.data
-          }
-        });
-      };
-    }
+const getCharactersFromApi = async (movie, setMovieState, toast) => {
+  try{
     const characterResponse = movie.characters.map(async (url) => {
       return await fetch(url);
     });
     const res = await Promise.all(characterResponse);
-
+  
     if (res.length > 0) {
       let data = [];
       for(const item of res) {
         const itemData = await item.json();
         data.push(itemData);
       }
-
+  
       saveCharacterList(movie.title, data);
       setMovieState(prevState => {
         return{
@@ -50,8 +36,8 @@ const fetchCharacters = async (props, toast, setMovieState) => {
     }else {
       return toast.current.showToast('5', CHARACTER_ERROR);
     }
-  } catch (error) {
-    return toast.current.showToast('5', CHARACTER_ERROR);
+  }catch(error) {
+    return toast.current.showToast('5', CHARACTER_ERROR);    
   }finally {
     setMovieState(prevState => {
       return{
@@ -59,6 +45,30 @@ const fetchCharacters = async (props, toast, setMovieState) => {
         loading: false,
       }
     });
+  }
+}
+
+const fetchCharacters = async (props, toast, setMovieState) => {
+  const { movie } = props;
+  
+  const cachedCharacterList = getCharacterList();
+  console.log("cachedCharacterList", cachedCharacterList);
+  if(cachedCharacterList != null && cachedCharacterList.length > 0) {
+    const filteredMovie = cachedCharacterList.filter(movieItem => movieItem.title === movie.title);
+    console.log('filteredMovie', filteredMovie);
+    if(filteredMovie.length > 0) {
+      setMovieState(prevState => {
+        return{
+          ...prevState,
+          loading: false,
+          characterList: filteredMovie[0].data
+        }
+      });
+    }else {
+      return getCharactersFromApi(movie, setMovieState, toast);
+    }
+  }else {
+    return getCharactersFromApi(movie, setMovieState, toast);      
   }
 }
 
