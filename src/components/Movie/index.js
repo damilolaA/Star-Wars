@@ -20,7 +20,7 @@ const getCharactersFromApi = async (movie, setMovieState, toast) => {
     const res = await Promise.all(characterResponse);
   
     if (res.length > 0) {
-      let data = [];
+      const data = [];
       for(const item of res) {
         const itemData = await item.json();
         data.push(itemData);
@@ -52,10 +52,8 @@ const fetchCharacters = async (props, toast, setMovieState) => {
   const { movie } = props;
   
   const cachedCharacterList = getCharacterList();
-  console.log("cachedCharacterList", cachedCharacterList);
   if(cachedCharacterList != null && cachedCharacterList.length > 0) {
     const filteredMovie = cachedCharacterList.filter(movieItem => movieItem.title === movie.title);
-    console.log('filteredMovie', filteredMovie);
     if(filteredMovie.length > 0) {
       setMovieState(prevState => {
         return{
@@ -206,6 +204,8 @@ function Movie(props) {
                       onDoubleClick={() => sortCharacterHeight(state, setMovieState)}
                     >
                       {"Height In Cm & Feet"}
+                      {" = "}
+                      <b>{(heightInMetrics(characterList))}</b>
                       <p>{sortTypeNum === 3 && (heightOrder === ASC ? ASCENDING : DESCENDING)}</p>
                   </th>
                   </tr>
