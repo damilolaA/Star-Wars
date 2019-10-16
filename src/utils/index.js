@@ -24,10 +24,10 @@ export const heightInMetrics = (characterList) => {
 
 export const saveCharacterList = (title, characterList) => {
   const movieData = {"title": title, "data": characterList};
-  let currentMovieList = getCharacterList();
+  const currentMovieList = getCharacterList();
 
   if(currentMovieList == null) {
-    let list = [];
+    const list = [];
     list.push(movieData);
     const movieDataList = JSON.stringify(list);
     localStorage.setItem(CHARACTER_LIST, movieDataList);
